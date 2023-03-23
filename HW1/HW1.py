@@ -149,7 +149,7 @@ def fill_value_into_matrix(M, v, s, N, mask):
             
     return M, v      
 
-def get_surface_reconstruction(z, mask, s):
+def get_surface_reconstruction(z, mask, s, optimize):
     nonzero_h, nonzero_w = np.where(mask!=0)
     
     # Filter strange point in z
@@ -160,17 +160,21 @@ def get_surface_reconstruction(z, mask, s):
     
     Z = mask.astype(np.float32)
     
-    for i in range(s):
-        if z[i] > z_max:
-            Z[nonzero_h[i], nonzero_w[i]] = z_max
-        elif z[i] < z_min:
-            Z[nonzero_h[i], nonzero_w[i]] = z_min
-        else:
+    if optimize:
+        for i in range(s):
+            if z[i] > z_max:
+                Z[nonzero_h[i], nonzero_w[i]] = z_max
+            elif z[i] < z_min:
+                Z[nonzero_h[i], nonzero_w[i]] = z_min
+            else:
+                Z[nonzero_h[i], nonzero_w[i]] = z[i]
+    else:
+        for i in range(s):
             Z[nonzero_h[i], nonzero_w[i]] = z[i]
-
+        
     return Z
 
-def compute_depth(mask, N):
+def compute_depth(mask, N, optimize = True):
     N = np.reshape(N, (image_row, image_col, 3))
     
     # number of pixels of the object 
@@ -186,7 +190,7 @@ def compute_depth(mask, N):
     # M.T * M * z = M.T * v
     z = scipy.sparse.linalg.spsolve(M.T @ M, M.T @ v)
     
-    return get_surface_reconstruction(z, mask, s)
+    return get_surface_reconstruction(z, mask, s, optimize)
     
     
 
@@ -201,7 +205,7 @@ if __name__ == '__main__':
         normal_visualization(N)
         
         mask = read_bmp(filepath + '/pic1.bmp')
-        Z = compute_depth(mask, N)
+        Z = compute_depth(mask, N, optimize = True)
         
         depth_visualization(Z)
         save_ply(Z, filepath + '/' + object + '.ply')
