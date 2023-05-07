@@ -36,7 +36,7 @@ class Stitcher:
     def __init__(self):
         pass
 
-    def stitch(self, imgs, grays, SIFT_Detector, threshold = 0.75):
+    def stitch(self, imgs, grays, SIFT_Detector, threshold = 0.75, blend = 'linearBlendingWithConstantWidth'):
         # Step1 - extract the keypoints and features by SIFT
         key_points_1, descriptors_1 = SIFT_Detector.detectAndCompute(grays[0], None)
         key_points_2, descriptors_2 = SIFT_Detector.detectAndCompute(grays[1], None)
@@ -48,7 +48,7 @@ class Stitcher:
         H = self.RANSAC_get_H(matches)
 
         # Step4 - Warp image to create panoramic image
-        warp_img = self.warp(imgs[0], imgs[1], H)
+        warp_img = self.warp(imgs[0], imgs[1], H, blend)
         
         return warp_img
 
@@ -92,7 +92,7 @@ class Stitcher:
         
         homography = Homography()
         threshold = 5
-        iteration_num = 8000
+        iteration_num = 2000
         max_inliner_num = 0
         best_H = None
         
@@ -122,7 +122,7 @@ class Stitcher:
 
         return best_H
                 
-    def warp(self, img1, img2, H):
+    def warp(self, img1, img2, H, blendType):
         left_down = np.hstack(([0], [0], [1]))
         left_up = np.hstack(([0], [img1.shape[0]-1], [1]))
         right_down = np.hstack(([img1.shape[1]-1], [0], [1]))
@@ -142,8 +142,11 @@ class Stitcher:
         warped2 = cv2.warpPerspective(src=img2, M=A, dsize=size)
         
         blender = Blender()
-        result = blender.linearBlendingWithConstantWidth([warped1, warped2])
-
+        if blendType == 'linearBlendingWithConstantWidth':
+            result = blender.linearBlendingWithConstantWidth([warped1, warped2])
+        else:
+            result = blender.linearBlending([warped1, warped2])
+        
         return result
 
 class Blender:
@@ -281,6 +284,7 @@ class Blender:
                     linearBlendingWithConstantWidth_img[i, j] = img_right[i, j]
         return linearBlendingWithConstantWidth_img
 
+
 class Homography:
     def __init__(self):
         pass
@@ -310,26 +314,34 @@ if __name__ == '__main__':
     SIFT_Detector = cv2.SIFT_create()
     stitcher = Stitcher()
     fileList = ['baseline', 'bonus']
+    blendType = None
     
     for filename in fileList:
         if filename == 'baseline':
             imgNameList = ['m1.jpg', 'm2.jpg', 'm3.jpg', 'm4.jpg', 'm5.jpg', 'm6.jpg']
+            blendType = 'linearBlending'
         else:
             imgNameList = ['m1.jpg', 'm2.jpg', 'm3.jpg', 'm4.jpg']
+            blendType = 'linearBlendingWithConstantWidth'
+            
 
         img1, img_gray1 = read_img(os.path.join(filename, imgNameList[0]))
         img2, img_gray2 = read_img(os.path.join(filename, imgNameList[1]))
         
-        result_img = stitcher.stitch([img1, img2], [img_gray1, img_gray2],SIFT_Detector, threshold = 0.75)
+        result_img = stitcher.stitch([img1, img2], [img_gray1, img_gray2],SIFT_Detector, threshold = 0.75, blend = blendType)
         result_gray = cv2.cvtColor(result_img, cv2.COLOR_BGR2GRAY)
         
+        cv2.imwrite(os.path.join(filename, 'First_2_result.jpg'), result_img)
         
-        for img_name in imgNameList[2:]:
+        for idx, img_name in enumerate(imgNameList[2:], start = 3):
             next_img, next_img_gray = read_img(os.path.join(filename, img_name))
-            result_img = stitcher.stitch([result_img, next_img], [result_gray, next_img_gray], SIFT_Detector, threshold = 0.75)
+            result_img = stitcher.stitch([result_img, next_img], [result_gray, next_img_gray], SIFT_Detector, threshold = 0.75, blend = blendType)
             result_gray = cv2.cvtColor(result_img, cv2.COLOR_BGR2GRAY)
             
-        cv2.imwrite(os.path.join(filename, 'result2.jpg'), result_img)
+            if idx != len(imgNameList): 
+                cv2.imwrite(os.path.join(filename, f'First_{idx}_result.jpg'), result_img)
+            
+        cv2.imwrite(os.path.join(filename, 'Final_result.jpg'), result_img)
         
 
     # you can use this function to store the result
