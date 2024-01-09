@@ -4,6 +4,8 @@ This course is lectured by 林奕成 at NYCU
 
 **Course Information** : [Computer Vision](https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy=112&Sem=2&CrsNo=535651&lang=zh-tw)
 
+<BR>
+
 ## Lecture
 
 | Lecture |                     Description                     |
@@ -19,6 +21,8 @@ This course is lectured by 林奕成 at NYCU
 |   L8    |                 **_Camera Models_**                 |
 |   L9    |        **_Two Views and Epipolar Geometry_**        |
 |   L10   |            **_Rectification and Depth_**            |
+
+<BR>
 
 ## Assignment
 
