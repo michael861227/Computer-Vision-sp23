@@ -24,9 +24,9 @@ This course is lectured by 林奕成 at NYCU
 
 <BR>
 
-## Assignment
+## Programming Assignment
 
-| Assignment |       Description        |         Code          |
-| :--------: | :----------------------: | :-------------------: |
-|    HW1     | **_Photometric Stereo_** | :link: [link](./HW1/) |
-|    HW2     |      **_Panorama_**      | :link: [link](./HW2/) |
+| Programming Assignment |       Description        |         Code          |
+| :--------------------: | :----------------------: | :-------------------: |
+|          HW1           | **_Photometric Stereo_** | :link: [Link](./HW1/) |
+|          HW2           |      **_Panorama_**      | :link: [Link](./HW2/) |
