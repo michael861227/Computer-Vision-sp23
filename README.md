@@ -1,8 +1,10 @@
 # Computer Vision 2023 @ NYCU
 
-This course is lectured by 林奕成 at NYCU
+## About This Repository
 
-**Course Information** : [Computer Vision](https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy=112&Sem=2&CrsNo=535651&lang=zh-tw)
+This repository is dedicated to the programming assignment for the Computer Vision course in Spring 2023 at NYCU, lectured by Professor 林奕成
+
+See more [Computer Vision](https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy=112&Sem=2&CrsNo=535651&lang=zh-tw) course information
 
 <BR>
 
