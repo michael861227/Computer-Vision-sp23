@@ -32,3 +32,11 @@ See more [Computer Vision](https://timetable.nycu.edu.tw/?r=main/crsoutline&Acy=
 | :--------------------: | :----------------------: | :-------------------: |
 |          HW1           | **_Photometric Stereo_** | :link: [Link](./HW1/) |
 |          HW2           |      **_Panorama_**      | :link: [Link](./HW2/) |
+
+<BR>
+
+## Usage
+
+```shell
+$ git clone git@github.com:michael861227/Computer-Vision-sp23.git
+```
